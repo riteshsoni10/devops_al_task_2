@@ -34,3 +34,18 @@ CMD ["java","-jar","/usr/share/webapps/jenkins/jenkins.war"]
 The dockerfile should always start with `FROM` instruction. The FROM instruction specifies the Parent Image from which we are building. The `RUN` instruction is used to execute the shell commands during the build creation. The `ENV` instruction is used to set environment variables for the image. The `EXPOSE` instruction is used to perform Port Address Translation in the container i.e; exposing a service to the outside world. The `CMD` instructions are executed at the run time i.e during the container creation. 
 
 
+The image can be easily created using  dockerfile using `docker build` command. 
+
+```
+mkdir /opt/jenkins
+cd /opt/jenkins
+
+# Create file name Dockerfile with the earlier mentioned steps
+
+docker build -t jenkins:v1 . --network=host
+```
+
+*-t* parameter denotes the tag for the image
+
+*.* represents the current working directory from which the Dockerfile would be read. It can also be provided using path where the dockerfile  is stored like `/opt/jenkins`
+
