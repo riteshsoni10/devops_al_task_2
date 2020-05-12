@@ -51,7 +51,7 @@ docker build -t jenkins:v1 /opt/jenkins/ --network=host
 
 
 
-Initialising jenkins container using image
+Initialising **jenkins container** using image
 
 ```
  docker run -dit -v jenkins_data:/var/lib/jenkins -v /var/run/docker.sock:/var/run/docker.sock \
@@ -59,7 +59,7 @@ Initialising jenkins container using image
 ```
 
 The jenkins container data directory `/var/lib/jenkins` is mounted on docker volume for data persistency during unavoidable circumstances.
-The docker dameon socket is mounted to enable docker cli from inside the jenkins container.
+The **docker dameon socket** is mounted to enable docker cli from inside the jenkins container.
 
 During the initialisation of jenkins server for the first time, the Jenkins server proides `secret key` in the console logs for the first time login.
 
@@ -94,7 +94,7 @@ Steps to create the `code_checkout` job are as follows:
   <em>Fig 3.: GitHub Project URL </em>
 </p>
 
-4. Configure *Source Code Management*
+4. Configure **Source Code Management**
 
   We are only tracking the master branch, since the code is pushed finally in master branch.
 
@@ -104,9 +104,9 @@ Steps to create the `code_checkout` job are as follows:
   <em>Fig 4.: Source Code Management Configuration  </em>
 </p>
 
-5. Steps to perform at *build Stage*
+5. Steps to perform at **Build Stage**
 
-  The source code is copied into the project deployment directory i.e */opt/code*. The script is present in directory scripts in the repository named 'code_checkout_build_stage.sh'. The contents of script needs to be copied in the build stage of the job.
+  The source code is copied into the project deployment directory i.e */opt/code*. The script is present in scripts directory in this repository with name 'code_checkout_build_stage.sh'. The contents of script needs to be copied in the build stage of the job.
  
  <p align="center">
   <img src="screenshots/code_checkout_directory.png" width="800" title="Build Stage">
@@ -125,7 +125,7 @@ Steps to create the `code_deployment` job are as follows:
 
 2. Configure *Job Name*
 
-3. Configure *Build Triggers*
+3. Configure **Build Triggers**
    The build trigger is configured to trigger the job when the upstream job `code_checkout` is stable i.e successful.
    
 <p align="center">
@@ -134,7 +134,7 @@ Steps to create the `code_deployment` job are as follows:
   <em>Fig 6.: Deployment Job Build Triggers Configuration  </em>
 </p>
 
-4. Operations to perform at *build stage*
+4. Operations to perform at **Build stage**
 
    In the build stage, the project deployment directory is scanned for HTML and PHP pages with extension .html and .php respectively. If the project directory contains both HTML annd PHP language code, then customised image i.e; `riteshsoni296/apache-php7:latest` will be used to launch the container otherwise the apache web server image will be used to launch the apache web server container for HTML ccode deployment.
    
@@ -168,7 +168,7 @@ Steps to create the `code_test` job are as follows:
   <em>Fig 8.: Test Job Build Triggers Configuration  </em>
 </p>
    
-4.  Operations to perform at *build stage*
+4.  Operations to perform at **Build stage**
 
     In case of Web container is running, then the private IP of container is fetched and the code reachability is verified using curl command. If the curl command output gives numeric value other than 200, the job is considered as failed by passing exit status 1.
     
@@ -192,4 +192,53 @@ Steps to create the `code_test` job are as follows:
 </p>
     
     
+5. Configuration of **Post build actions** 
+   
+   The `Post Build Aptions` is configured to **send the email alerts** to *developers* with the last commit about the `failure of  the JOB` or Code with the full build status Logs of the current Job.
+   
+   We need to click on `Add Post Build Action` drop-down and select **E-Mail Notification**.
+   
+<p align="center">
+  <img src="screenshots/code_test_post_build_actions.png" width="800" title="Post Build Actions ">
+  <br>
+  <em>Fig 10.: Test Job Post Build Actions Configuration  </em>
+</p>
+    
+   To `send Email` from jenkins Server we need to **configure SMTP** in Jenkins. For cconfiguration of SMTP in Jenkins Server, following steps are to be followed: 
+   
+   -  Click on **Manage Jenkins** on the left pane
+   
+   - Click on **Configure system** under  System Configuration
+    
+<p align="center">
+  <img src="screenshots/smtp_configuration.png" width="800" title="SMTP Configuration ">
+  <br>
+  <em>Fig 11.: SMTP Configuration  </em>
+</p>
 
+   - Click on Advanced in **E-Mail  Notification**
+     
+     Scroll down to the bottom and click on advanced in E-Mail Notification block. The details that are required:
+     a. SMTP Server like smtp.gmail.com
+     b. Enable checkbox for **Use SMTP Authentication**, if using gmail SMTP Server
+     c. Enter the **Username and Password**
+     d. Enable checkbox for **Enable TLS**
+     e. SMTP Port like 587 for gmail
+     
+<p align="center">
+  <img src="screenshots/email_configuration.png" width="800" title="SMTP Configuration ">
+  <br>
+  <em>Fig 11.: SMTP Server Configuration  </em>
+</p>   
+
+   If using gmail SMTP Server, then  **Less Secure App Access** needs to be turned on from the sender email id.
+       
+<p align="center">
+  <img src="screenshots/less_secure_app_access.png" width="800" title="Additional Configuration ">
+  <br>
+  <em>Fig 11.: Gmail Configuration  </em>
+</p>  
+   
+   - Click on Apply and Save
+   
+   
