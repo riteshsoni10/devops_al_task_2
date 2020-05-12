@@ -42,10 +42,22 @@ cd /opt/jenkins
 
 # Create file name Dockerfile with the earlier mentioned steps
 
-docker build -t jenkins:v1 . --network=host
+docker build -t jenkins:v1 /opt/jenkins/ --network=host
 ```
 
 *-t* parameter denotes the tag for the image
 
-*.* represents the current working directory from which the Dockerfile would be read. It can also be provided using path where the dockerfile  is stored like `/opt/jenkins`
+*/opt/jenkins* represents the directory that consists Dockerfile.
+
+
+
+Initialising a container using image
+
+```
+ docker run -it -v jenkins_data:/var/lib/jenkins -v /var/run/docker.sock:/var/run/docker.sock \
+         --name jenkins -p 8080:8080 riteshsoni296/jenkins:latest
+```
+
+The jenkins container data directory `/var/lib.jenkins` is mounted on docker volume for data persistency during unavoidable circumstances.
+The docker dameon socket is mounted to enable docker cli from inside the jenkins container.
 
