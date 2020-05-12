@@ -95,6 +95,7 @@ Steps to create the `code_checkout` job are as follows:
 </p>
 
 4. Configure *Source Code Management*
+
   We are only tracking the master branch, since the code is pushed finally in master branch.
 
 <p align="center">
@@ -104,6 +105,7 @@ Steps to create the `code_checkout` job are as follows:
 </p>
 
 5. Steps to perform at *build Stage*
+
   The source code is copied into the project deployment directory i.e */opt/code*. The script is present in directory scripts in the repository named 'code_checkout_build_stage.sh'. The contents of script needs to be copied in the build stage of the job.
  
  <p align="center">
@@ -113,6 +115,7 @@ Steps to create the `code_checkout` job are as follows:
 </p>
 
 6. Click on Apply and Save
+
 
 ##### Job2 : Check the language of code and deploy the code
 
@@ -132,6 +135,7 @@ Steps to create the `code_deployment` job are as follows:
 </p>
 
 4. Operations to perform at *build stage*
+
    In the build stage, the project deployment directory is scanned for HTML and PHP pages with extension .html and .php respectively. If the project directory contains both HTML annd PHP language code, then customised image i.e; `riteshsoni296/apache-php7:latest` will be used to launch the container otherwise the apache web server image will be used to launch the apache web server container for HTML ccode deployment.
    
    The customised php along with apache server contains only selected packages i.e;php7, php7-fpm, php7-opcache, php7-gd, php7-mysqli, php7-zlib, php7-curl. The image can be extended as per requirements using Dockerfile. The `Dockerfile` for riteshsoni296/apache-php7:latest image is stored in the repository for reference.
@@ -145,6 +149,7 @@ Steps to create the `code_deployment` job are as follows:
 </p>
 
 5. Apply and Save 
+
 
 ##### Job3 and Job4 : Test the code and Send alerts to developer
 
@@ -164,6 +169,7 @@ Steps to create the `code_test` job are as follows:
 </p>
    
 4.  Operations to perform at *build stage*
+
     In case of Web container is running, then the private IP of container is fetched and the code reachability is verified using curl command. If the curl command output gives numeric value other than 200, the job is considered as failed by passing exit status 1.
     
     ```
@@ -177,11 +183,12 @@ Steps to create the `code_test` job are as follows:
     *-o /dev/null,* used to dump the output of the curl command.
     *10.10.15.12,* IP Address of web container
     
-    The script is present for reference
+    The script is present for reference in repository at location `scripts/code_test_build_stage.sh`.
+    
 <p align="center">
   <img src="screenshots/code_test_build_stage.png" width="800" title="Test Build Stage ">
   <br>
-  <em>Fig 8.: Test Job Build Stage Configuration  </em>
+  <em>Fig 9.: Test Job Build Stage Configuration  </em>
 </p>
     
     
