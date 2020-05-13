@@ -1,5 +1,7 @@
 FROM alpine:latest
 
+MAINTAINER Ritesh Kumar
+
 RUN apk --update add apache2 openrc php7 php7-fpm php7-opcache php7-gd php7-mysqli php7-zlib php7-curl -X http://dl-cdn.alpinelinux.org/alpine/edge/community
 	
 RUN rc-update add apache2 boot
