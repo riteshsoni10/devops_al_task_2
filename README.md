@@ -1,10 +1,8 @@
 # Automated Deployment and Testing
 
+## Tasks
 
-
-### Tasks
-
-#### Jenkins Image using Dockerfile
+### Jenkins Image using Dockerfile
 
 The Dockerfile is created from the `alpine:latest` linux image minimising the storage required to run the jenkins container. The image contains the docker cli to launch the docker containers in the following tasks. 
 
@@ -50,7 +48,6 @@ docker build -t jenkins:v1 /opt/jenkins/ --network=host
 */opt/jenkins* represents the directory that consists Dockerfile.
 
 
-
 Initialising **jenkins container** using image
 
 ```
@@ -70,9 +67,9 @@ During the initialisation of jenkins server for the first time, the Jenkins serv
 </p>
 
 
-#### Trigger Deployment when changes are pushed to SCM
+### Trigger Deployment when changes are pushed to SCM
 
-##### Job1 : Trigger Job due to SCM Changes
+### Job1 : Trigger Job due to SCM Changes
 
 Steps to create the `code_checkout` job are as follows:
 
@@ -104,20 +101,31 @@ Steps to create the `code_checkout` job are as follows:
   <em>Fig 4.: Source Code Management Configuration  </em>
 </p>
 
-5. Steps to perform at **Build Stage**
+5. Configure **Build Triggers**
+
+   The Job should be triggered only when any changes are pushed to the code repository. So we need to enable the checkbox near `Poll SCM` and configure the schedular to run at every minute by setting "* * * * * " value.
+  
+<p align="center">
+  <img src="screenshots/code_checkout_github_polling.png" width="800" title="Build Stage">
+  <br>
+  <em>Fig 5.: Poll SCM </em>
+</p>
+
+
+6. Steps to perform at **Build Stage**
 
    From the **Add Build Step** drop-down, `Execute Shell` is selected to run the operations at build stage. The source code is copied into the project deployment directory i.e */opt/code*. The script is present in scripts directory in this repository with name 'code_checkout_build_stage.sh'. The contents of script needs to be copied in the build stage of the job.
  
  <p align="center">
   <img src="screenshots/code_checkout_directory.png" width="800" title="Build Stage">
   <br>
-  <em>Fig 5.: Code Checkout Build Stage  </em>
+  <em>Fig 6.: Code Checkout Build Stage  </em>
 </p>
 
-6. Click on Apply and Save
+7. Click on Apply and Save
 
 
-##### Job2 : Check the language of code and deploy the code
+### Job2 : Check the language of code and deploy the code
 
 Steps to create the `code_deployment` job are as follows:
 
@@ -131,7 +139,7 @@ Steps to create the `code_deployment` job are as follows:
 <p align="center">
   <img src="screenshots/code_deployment.png" width="800" title="Build trigger">
   <br>
-  <em>Fig 6.: Deployment Job Build Triggers Configuration  </em>
+  <em>Fig 7.: Deployment Job Build Triggers Configuration  </em>
 </p>
 
 4. Operations to perform at **Build stage**
@@ -145,13 +153,13 @@ Steps to create the `code_deployment` job are as follows:
 <p align="center">
   <img src="screenshots/code_deployment_build_stage.png" width="800" title="Build Stage">
   <br>
-  <em>Fig 7.: Deployment Job Build Stage Configuration  </em>
+  <em>Fig 8.: Deployment Job Build Stage Configuration  </em>
 </p>
 
 5. Apply and Save 
 
 
-##### Job3 and Job4 : Test the code and Send alerts to developer
+### Job3 and Job4 : Test the code and Send alerts to developer
 
 Steps to create the `code_test` job are as follows:
 
@@ -159,13 +167,14 @@ Steps to create the `code_test` job are as follows:
 
 2. Configure *Job Name*
 
-3. Configure *Build Triggers*
+3. Configure **Build Triggers**
+
    The build trigger is configured to trigger the job when the upstream job `code_deployment` is stable i.e successful.
 
 <p align="center">
   <img src="screenshots/code_test_build_triggers.png" width="800" title="Test Build trigger">
   <br>
-  <em>Fig 8.: Test Job Build Triggers Configuration  </em>
+  <em>Fig 9.: Test Job Build Triggers Configuration  </em>
 </p>
    
 4.  Operations to perform at **Build stage**
@@ -188,7 +197,7 @@ Steps to create the `code_test` job are as follows:
 <p align="center">
   <img src="screenshots/code_test_build_stage.png" width="800" title="Test Build Stage ">
   <br>
-  <em>Fig 9.: Test Job Build Stage Configuration  </em>
+  <em>Fig 10.: Test Job Build Stage Configuration  </em>
 </p>
     
     
@@ -201,7 +210,7 @@ Steps to create the `code_test` job are as follows:
 <p align="center">
   <img src="screenshots/code_test_post_build_actions.png" width="800" title="Post Build Actions ">
   <br>
-  <em>Fig 10.: Test Job Post Build Actions Configuration  </em>
+  <em>Fig 11.: Test Job Post Build Actions Configuration  </em>
 </p>
 
    Sending Alerts only for Unstable builds or the broken builds
@@ -209,7 +218,7 @@ Steps to create the `code_test` job are as follows:
 <p align="center">
   <img src="screenshots/code_test_email.png" width="800" title="Post Build Email ">
   <br>
-  <em>Fig 11.: Test Job Post Build Email Configuration  </em>
+  <em>Fig 12.: Test Job Post Build Email Configuration  </em>
 </p>
     
 6. Click on Apply and Save
@@ -223,7 +232,7 @@ Steps to create the `code_test` job are as follows:
 <p align="center">
   <img src="screenshots/smtp_configuration.png" width="800" title="SMTP Configuration ">
   <br>
-  <em>Fig 12.: SMTP Configuration  </em>
+  <em>Fig 13.: SMTP Configuration  </em>
 </p>
 
    - Click on Advanced in **E-Mail  Notification**
@@ -243,7 +252,7 @@ Steps to create the `code_test` job are as follows:
 <p align="center">
   <img src="screenshots/email_configuration.png" width="800" title="SMTP Configuration ">
   <br>
-  <em>Fig 13.: SMTP Server Configuration  </em>
+  <em>Fig 14.: SMTP Server Configuration  </em>
 </p>   
 
    If using gmail SMTP Server, then  **Less Secure App Access** needs to be turned on from the sender email id.
@@ -251,13 +260,13 @@ Steps to create the `code_test` job are as follows:
 <p align="center">
   <img src="screenshots/less_secure_app_access.png" width="650" title="Additional Configuration ">
   <br>
-  <em>Fig 14.: Gmail Configuration  </em>
+  <em>Fig 15.: Gmail Configuration  </em>
 </p>  
    
    - Click on Apply and Save
 
 
-##### Job5 : Monitor the deployed Containers
+### Job5 : Monitor the deployed Containers
 
 The job will be configured to run at at interval of minute, and check the availability of project containers. If the containers  are in stopped state, the Job will start the containers.
 
@@ -274,7 +283,7 @@ Steps to create the `monitor_deployment_containers` job are as follows:
 <p align="center">
   <img src="screenshots/monitor_deployment_containers.png" width="800" title="Build Triggers Schedular ">
   <br>
-  <em>Fig 15.: Monitoring Job Build Trigger Schedular  </em>
+  <em>Fig 16.: Monitoring Job Build Trigger Schedular  </em>
 </p>  
    
 4. Operations to be performed at **Build stage**
@@ -284,9 +293,9 @@ Steps to create the `monitor_deployment_containers` job are as follows:
  5. Click on Apply and Save
  
  
-#### Build Pipeline Plugin Configuration
+### Build Pipeline Plugin Configuration
  
-##### Installation
+#### Installation
 
 1. Click on  **Manage Jenkins** on the leeft pane
 
@@ -301,14 +310,14 @@ Steps to create the `monitor_deployment_containers` job are as follows:
 6. Click on  `Install without restart`
 
 
-##### Configuration
+#### Configuration
 
 1. Click on **+** symbol in the bar just beside ALL
 
 <p align="center">
   <img src="screenshots/build_pipeline_plugin_view.png" width="800" title="Build Pipeline ">
   <br>
-  <em>Fig 16.: Create a New View </em>
+  <em>Fig 17.: Create a New View </em>
 </p>  
 
 2. Configure  Name for the view
@@ -318,7 +327,7 @@ Steps to create the `monitor_deployment_containers` job are as follows:
  <p align="center">
   <img src="screenshots/deployment_stages.png" width="800" title="Build Pipeline ">
   <br>
-  <em>Fig 17.: Build Pipeline View </em>
+  <em>Fig 18.: Build Pipeline View </em>
 </p>
 
 3. Configure **Build Pipeline** View
@@ -328,7 +337,7 @@ Steps to create the `monitor_deployment_containers` job are as follows:
 <p align="center">
   <img src="screenshots/configure_build_pipeline.png" width="800" title="Build Pipeline ">
   <br>
-  <em>Fig 18.: Build Pipeline Configure </em>
+  <em>Fig 19.: Build Pipeline Configure </em>
 </p>
 
 4. Build Pipeline View
@@ -338,7 +347,7 @@ Steps to create the `monitor_deployment_containers` job are as follows:
 <p align="center">
   <img src="screenshots/build_delivery_pipeline.png" width="800" title="Build Pipeline ">
   <br>
-  <em>Fig 19.: Build Pipeline  </em>
+  <em>Fig 20.: Build Pipeline  </em>
 </p>
    
    
