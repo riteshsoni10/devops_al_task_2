@@ -106,7 +106,7 @@ Steps to create the `code_checkout` job are as follows:
 
 5. Steps to perform at **Build Stage**
 
-  The source code is copied into the project deployment directory i.e */opt/code*. The script is present in scripts directory in this repository with name 'code_checkout_build_stage.sh'. The contents of script needs to be copied in the build stage of the job.
+   From the **Add Build Step** drop-down, `Execute Shell` is selected to run the operations at build stage. The source code is copied into the project deployment directory i.e */opt/code*. The script is present in scripts directory in this repository with name 'code_checkout_build_stage.sh'. The contents of script needs to be copied in the build stage of the job.
  
  <p align="center">
   <img src="screenshots/code_checkout_directory.png" width="800" title="Build Stage">
@@ -136,7 +136,7 @@ Steps to create the `code_deployment` job are as follows:
 
 4. Operations to perform at **Build stage**
 
-   In the build stage, the project deployment directory is scanned for HTML and PHP pages with extension .html and .php respectively. If the project directory contains both HTML annd PHP language code, then customised image i.e; `riteshsoni296/apache-php7:latest` will be used to launch the container otherwise the apache web server image will be used to launch the apache web server container for HTML ccode deployment.
+   From the **Add Build Step** drop-down, `Execute Shell` is selected to run the operations at build stage. In the build stage, the project deployment directory is scanned for HTML and PHP pages with extension .html and .php respectively. If the project directory contains both HTML annd PHP language code, then customised image i.e; `riteshsoni296/apache-php7:latest` will be used to launch the container otherwise the apache web server image will be used to launch the apache web server container for HTML ccode deployment.
    
    The customised php along with apache server contains only selected packages i.e;php7, php7-fpm, php7-opcache, php7-gd, php7-mysqli, php7-zlib, php7-curl. The image can be extended as per requirements using Dockerfile. The `Dockerfile` for riteshsoni296/apache-php7:latest image is stored in the repository for reference.
    
@@ -170,7 +170,7 @@ Steps to create the `code_test` job are as follows:
    
 4.  Operations to perform at **Build stage**
 
-    In case of Web container is running, then the private IP of container is fetched and the code reachability is verified using curl command. If the curl command output gives numeric value other than 200, the job is considered as failed by passing exit status 1.
+    From the **Add Build Step** drop-down, `Execute Shell` is selected to run the operations at build stage. In case of Web container is running, then the private IP of container is fetched and the code reachability is verified using curl command. If the curl command output gives numeric value other than 200, the job is considered as failed by passing exit status 1.
     
     ```
     curl -s -w "%{http_code}" -o /dev/null http://10.10.15.12
@@ -203,8 +203,18 @@ Steps to create the `code_test` job are as follows:
   <br>
   <em>Fig 10.: Test Job Post Build Actions Configuration  </em>
 </p>
+
+   Sending Alerts only for Unstable builds or the broken builds
+   
+<p align="center">
+  <img src="screenshots/code_test_email.png" width="800" title="Post Build Email ">
+  <br>
+  <em>Fig 11.: Test Job Post Build Email Configuration  </em>
+</p>
     
-   To `send Email` from jenkins Server we need to **configure SMTP** in Jenkins. For cconfiguration of SMTP in Jenkins Server, following steps are to be followed: 
+6. Click on Apply and Save
+
+ To `send Email` from jenkins Server we need to **configure SMTP** in Jenkins. For cconfiguration of SMTP in Jenkins Server, following steps are to be followed: 
    
    -  Click on **Manage Jenkins** on the left pane
    
@@ -213,32 +223,129 @@ Steps to create the `code_test` job are as follows:
 <p align="center">
   <img src="screenshots/smtp_configuration.png" width="800" title="SMTP Configuration ">
   <br>
-  <em>Fig 11.: SMTP Configuration  </em>
+  <em>Fig 12.: SMTP Configuration  </em>
 </p>
 
    - Click on Advanced in **E-Mail  Notification**
      
      Scroll down to the bottom and click on advanced in E-Mail Notification block. The details that are required:
-     a. SMTP Server like smtp.gmail.com
+     
+     a. SMTP Server like *smtp.gmail.com*
+     
      b. Enable checkbox for **Use SMTP Authentication**, if using gmail SMTP Server
+     
      c. Enter the **Username and Password**
+     
      d. Enable checkbox for **Enable TLS**
-     e. SMTP Port like 587 for gmail
+     
+     e. SMTP Port like 587 for *gmail*
      
 <p align="center">
   <img src="screenshots/email_configuration.png" width="800" title="SMTP Configuration ">
   <br>
-  <em>Fig 11.: SMTP Server Configuration  </em>
+  <em>Fig 13.: SMTP Server Configuration  </em>
 </p>   
 
    If using gmail SMTP Server, then  **Less Secure App Access** needs to be turned on from the sender email id.
        
 <p align="center">
-  <img src="screenshots/less_secure_app_access.png" width="800" title="Additional Configuration ">
+  <img src="screenshots/less_secure_app_access.png" width="650" title="Additional Configuration ">
   <br>
-  <em>Fig 11.: Gmail Configuration  </em>
+  <em>Fig 14.: Gmail Configuration  </em>
 </p>  
    
    - Click on Apply and Save
+
+
+##### Job5 : Monitor the deployed Containers
+
+The job will be configured to run at at interval of minute, and check the availability of project containers. If the containers  are in stopped state, the Job will start the containers.
+
+Steps to create the `monitor_deployment_containers` job are as follows:
+
+1. Create a *New Item* at the left column in Jenkins Welcome page
+
+2. Configure *Job Name*
+
+3. Configure **Build Triggers**
+   
+   In build triggers, Enable the checkbox for `Build Periodically`. The job is to be scheduled at every minute i.e * * * * * , the cron expression for schedular.
+   
+<p align="center">
+  <img src="screenshots/monitor_deployment_containers.png" width="800" title="Build Triggers Schedular ">
+  <br>
+  <em>Fig 15.: Monitoring Job Build Trigger Schedular  </em>
+</p>  
+   
+4. Operations to be performed at **Build stage**
+  
+   From the **Add Build Step** drop-down, `Execute Shell` is selected to run the operations at build stage. The shell script checks for the containers with the exited status, if any deployment container is found it tries to start them. If in case, any error dring startup is found,then the script creates the new deployement container. The shell script can be found in the repository at location `scripts/monitor_deployment_containers_build_stage.sh`
+   
+ 5. Click on Apply and Save
+ 
+ 
+#### Build Pipeline Plugin Configuration
+ 
+##### Installation
+
+1. Click on  **Manage Jenkins** on the leeft pane
+
+2. Click on **Manage Plugins** under System Configuration
+
+3. Click on **Available Tab**, and 
+
+4. Type in the *search bar* **Build Pipeline Plugin**
+
+5. Select the checkbox
+
+6. Click on  `Install without restart`
+
+
+##### Configuration
+
+1. Click on **+** symbol in the bar just beside ALL
+
+<p align="center">
+  <img src="screenshots/build_pipeline_plugin_view.png" width="800" title="Build Pipeline ">
+  <br>
+  <em>Fig 16.: Create a New View </em>
+</p>  
+
+2. Configure  Name for the view
+
+    Select radio-button near `Build Pipeline View`
+    
+ <p align="center">
+  <img src="screenshots/deployment_stages.png" width="800" title="Build Pipeline ">
+  <br>
+  <em>Fig 17.: Build Pipeline View </em>
+</p>
+
+3. Configure **Build Pipeline** View
+
+   Select the upstream Job from which the deployment chain starts.
+   
+<p align="center">
+  <img src="screenshots/configure_build_pipeline.png" width="800" title="Build Pipeline ">
+  <br>
+  <em>Fig 18.: Build Pipeline Configure </em>
+</p>
+
+4. Build Pipeline View
+
+   We can start, restart jobs from Build Pipeline View.
+   
+<p align="center">
+  <img src="screenshots/build_delivery_pipeline.png" width="800" title="Build Pipeline ">
+  <br>
+  <em>Fig 19.: Build Pipeline  </em>
+</p>
    
    
+ > Source: LinuxWorld Informatics. Private Ltd.
+ > 
+ > Under Guidance of : Mr. [Vimal Daga](https://in.linkedin.com/in/vimaldaga)
+ >
+ > Writer: [Ritesh Kumar](https://www.linkedin.com/in/riteshsoni10/)
+ >
+ > DevOps Assembly Lines Task 2
