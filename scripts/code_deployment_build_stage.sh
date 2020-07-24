@@ -1,12 +1,12 @@
 flag=0
 
 ## Checking if the HTML and PHP both language code is present 
-if find /opt/code -name "*.php" && find /opt/code -name "*.html" ; then
+if [ $(find . -type f \( -name "*.php" -a -name "*.html" \) | wc -l ) -gt 0 ]; then
 	echo "PHP and HTML Code found"
     flag=$(( $flag+1 ))
 
 ## Checking if the only HTML language code is present
-elif find /opt/code -name "*.html" ; then
+elif [ $(find . -type f  -name "*.html" | wc -l ) -gt 0 ]; then
 	echo "HTML Code found"
     flag=$(( $flag+2 ))
 
