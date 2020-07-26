@@ -1,5 +1,13 @@
 # Automated Deployment and Testing
 
+**Project Infrastructure Flow**
+
+<p align="center">
+  <img src="screenshots/devops_al_task_2.png" width="800" title="Project Infra">
+  <br>
+  <em>Fig 1.: Project Flow  </em>
+</p>
+
 ## Tasks
 
 ### Jenkins Image using Dockerfile
