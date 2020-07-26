@@ -354,7 +354,3 @@ Steps to create the `monitor_deployment_containers` job are as follows:
  > Source: LinuxWorld Informatics. Private Ltd.
  > 
  > Under Guidance of : Mr. [Vimal Daga](https://in.linkedin.com/in/vimaldaga)
- >
- > Writer: [Ritesh Kumar](https://www.linkedin.com/in/riteshsoni10/)
- >
- > DevOps Assembly Lines Task 2
